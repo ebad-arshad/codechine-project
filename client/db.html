@@ -3,7 +3,7 @@
 <body>
     <div id="status">Checking Database...</div>
     <script>
-        fetch('/db')
+        fetch('/api/db')
             .then(res => res.json())
             .then(data => {
                 document.body.innerHTML = `<h1>Database Status</h1><pre>${JSON.stringify(data, null, 2)}</pre>`;

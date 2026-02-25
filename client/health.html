@@ -3,7 +3,7 @@
 <body>
     <div id="status">Checking Health...</div>
     <script>
-        fetch('/health')
+        fetch('/api/health')
             .then(res => res.json())
             .then(data => {
                 document.body.innerHTML = `<h1>System Health</h1><pre>${JSON.stringify(data, null, 2)}</pre>`;

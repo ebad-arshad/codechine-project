@@ -61,12 +61,19 @@ The stack includes custom health probes designed for DevOps monitoring tools:
     cd codechine-project
     ```
 
-2. **Start the services:**
+2. **Set Environment Variables:**
+   You can either export them to your shell or create a `.env` file (see `.env.example` for required keys):
     ```bash
-    MONGODB_ROOT_PASSWORD='your_root_password' MONGODB_PASSWORD='your_database_password' docker compose up --build
+    export MONGODB_ROOT_PASSWORD='your_password'
+    export MONGODB_PASSWORD='your_password'
     ```
 
-3. **Access Endpoints:**
+3. **Start the services:**
+    ```bash
+    docker compose up --build
+    ```
+
+4. **Access Endpoints:**
 - Application: http://localhost:80
 - Health Page: http://localhost:80/status/health
 - DB Status Page: http://localhost:80/status/db

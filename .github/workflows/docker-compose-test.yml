@@ -4,7 +4,9 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'docker-compose.yaml'
+      - 'server/**'
+      - 'client/**'
+      - 'docker-compose.yml'
       - '.github/workflows/docker-compose-test.yml'
 
 jobs:

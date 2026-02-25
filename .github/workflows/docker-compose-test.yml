@@ -1,0 +1,43 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'docker-compose.yaml'
+      - '.github/workflows/docker-compose-test.yml'
+
+jobs:
+  test-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            docker-compose.yaml
+            client
+            server
+
+      - name: Validate Compose File
+        run: docker compose config
+
+      - name: Start Stack
+        run: docker compose up -d
+
+      - name: Wait for Services
+        run: sleep 15
+
+      - name: Check Backend Health
+        run: |
+          STATUS=$(curl -s http://localhost/api/health | jq -r .status)
+          if [ "$STATUS" != "UP" ]; then echo "Backend Down"; exit 1; fi
+
+      - name: Check Database Handshake
+        run: |
+          DB_STATUS=$(curl -s http://localhost/api/db | jq -r .database)
+          if [ "$DB_STATUS" != "Connected" ]; then echo "DB Connection Failed"; exit 1; fi
+
+      - name: Shutdown
+        run: docker compose down

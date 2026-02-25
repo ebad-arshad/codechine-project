@@ -94,3 +94,16 @@ In parallel with the service builds, a dedicated Integration Test workflow valid
 - Performs a configuration check on the docker-compose.yaml to catch syntax or logic errors.
 - Provisions the full environment (Frontend, Backend, and Database) on a clean GitHub runner.
 - Executes automated handshake tests to verify that the Backend can successfully persist data to MongoDB and that the Nginx proxy is correctly routing traffic to the internal API endpoints.
+
+---
+
+### CI/CD Pipeline Configuration
+To replicate this pipeline, the following GitHub Actions secrets and variables must be configured:
+
+**Secrets:**
+- `DOCKERHUB_TOKEN`: Personal Access Token for image registry.
+- `MONGODB_PASSWORD`: Required for the Integration Test handshake.
+- `MONGODB_ROOT_PASSWORD`: Required for the Integration Test handshake.
+
+**Variables:**
+- `DOCKERHUB_USERNAME`: Your Docker Hub registry handle.

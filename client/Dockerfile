@@ -16,11 +16,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the HTML/CSS/JS files from the builder stage
-COPY --from=builder /app/index.html /usr/share/nginx/html/
-COPY --from=builder /app/health.html /usr/share/nginx/html/
-COPY --from=builder /app/db.html /usr/share/nginx/html/
-COPY --from=builder /app/app.css /usr/share/nginx/html/
-COPY --from=builder /app/script.js /usr/share/nginx/html/
+COPY --from=builder /app /usr/share/nginx/html/
 
 # Expose Port 80
 EXPOSE 80

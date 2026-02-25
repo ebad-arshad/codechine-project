@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="status">Checking Health...</div>
+    <script>
+        fetch('/health')
+            .then(res => res.json())
+            .then(data => {
+                document.body.innerHTML = `<h1>System Health</h1><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            })
+            .catch(() => { document.body.innerHTML = '<h1>Health Check Failed</h1>'; });
+    </script>
+</body>
+</html>

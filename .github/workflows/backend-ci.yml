@@ -17,10 +17,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          sparse-checkout: |
-            server
 
       - name: Run Gitleaks Scan
         uses: gitleaks/gitleaks-action@v2
@@ -51,12 +47,14 @@ jobs:
         with:
           context: ./server
           load: true
-          tags: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            ${{ env.BACKEND_IMAGE }}:latest
 
       - name: Scan Backend Image
-        uses: aquasecurity/trivy-action@0.29.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
-          image-ref: ${{ env.BACKEND_IMAGE }}
+          image-ref: '${{ env.BACKEND_IMAGE }}:${{ github.sha }}'
           format: 'table'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
@@ -65,4 +63,5 @@ jobs:
       - name: Push Images to Docker Hub
         if: github.event_name == 'push'
         run: |
-          docker push ${{ env.BACKEND_IMAGE }}
+          docker push ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          docker push ${{ env.BACKEND_IMAGE }}:latest

@@ -26,7 +26,10 @@ jobs:
         run: docker compose config
 
       - name: Start Stack
-        run: docker compose up -d
+        env:
+          MONGODB_ROOT_PASSWORD: ${{ secrets.MONGODB_ROOT_PASSWORD }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        run: docker compose up -d --build
 
       - name: Wait for Services
         run: sleep 15

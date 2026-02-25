@@ -1,0 +1,53 @@
+services:
+  # 1. Database Layer: Hardened Bitnami MongoDB
+  db:
+    image: bitnami/mongodb@sha256:45b7d1b7470d061ddc089b743972916659e0e8a5c0df64db79466b8d5d0c2069
+    container_name: mongodb
+    restart: always
+    environment:
+      - MONGODB_DATABASE=todo-db
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - mongodb_data:/bitnami/mongodb
+    networks:
+      - backend-nw
+
+  # 2. Backend Layer: Node.js (Distroless)
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    environment:
+      - MONGODB_URI=mongodb://db:27017/todo-db
+      - PORT=5000
+    depends_on:
+      - db
+    networks:
+      - frontend-nw
+      - backend-nw
+
+  # 3. Frontend Layer: Nginx (Reverse Proxy)
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - frontend-nw
+
+# Network Isolation
+networks:
+  frontend-nw:
+  backend-nw:
+
+# Persistence Storage
+volumes:
+  mongodb_data:
+    driver: local

@@ -1,5 +1,5 @@
 # Stage 1
-FROM alpine:latest AS builder
+FROM alpine:3.14 AS builder
 WORKDIR /app
 
 COPY index.html health.html db.html app.css script.js ./
@@ -7,7 +7,7 @@ COPY index.html health.html db.html app.css script.js ./
 # -------------------------Multi-Stage-Build--------------------------------
 
 # Stage 2: Production Nginx Environment
-FROM nginx:alpine
+FROM nginx:1.28.2-alpine-slim
 
 # Remove default static assets provided by Nginx
 RUN rm -rf /usr/share/nginx/html/*

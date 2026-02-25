@@ -9,7 +9,7 @@ on:
 
 env:
   DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
-  BACKEND_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/todo-backend:${{ github.sha }}
+  BACKEND_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/todo-backend
 
 jobs:
   security-and-build:

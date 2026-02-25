@@ -4,6 +4,8 @@ This project is a production-ready To-Do application built to demonstrate shift-
 
 ---
 
+!(architecture-pictures/container-architecture.png)
+
 ## Tech Stack
 
 | Component | Technology | Role |

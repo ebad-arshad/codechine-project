@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: './terraform/environments/${{ vars.TERRAFORM_WORKSPACE }}'
     env:
       TF_VAR_mongodb_root_password: ${{ secrets.MONGODB_ROOT_PASSWORD }}
       TF_VAR_mongodb_password: ${{ secrets.MONGODB_PASSWORD }}
@@ -47,7 +47,7 @@ jobs:
       - name: Terraform Init & Workspace
         run: |
           terraform init
-          terraform workspace select ${{ vars.TERRAFORM_WORKSPACE }} || terraform workspace new ${{ vars.TERRAFORM_WORKSPACE }}
+          terraform workspace select ${{ vars.TERRAFORM_WORKSPACE }} 2>/dev/null || terraform workspace new ${{ vars.TERRAFORM_WORKSPACE }}
 
       - name: Terraform Plan
         if: github.ref != 'refs/heads/master'

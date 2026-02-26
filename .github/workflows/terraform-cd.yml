@@ -10,7 +10,7 @@ on:
   push:
     branches:
     - 'master'
-    - 'infra/**'
+    - 'infra/infrastructure_design'
     paths:
       - 'terraform/**'
 
@@ -73,7 +73,7 @@ jobs:
             ```terraform
             ${{ env.PLAN_OUTPUT }}
             ```
-          branch: terraform-updates-${{ github.ref_name }}
+          branch: infra/infrastructure_design
           base: master
 
       - name: Terraform Apply

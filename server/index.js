@@ -70,6 +70,8 @@ app.post('/api/todos', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+  console.log('Created by: Muhammad Ebad Arshad')
+});
 
-console.log('ebad')

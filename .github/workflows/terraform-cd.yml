@@ -1,6 +1,12 @@
 name: "Infrastructure CD"
 
 on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker Image Tag'
+        required: true
+        type: string
   push:
     branches:
     - 'master'
@@ -22,7 +28,7 @@ jobs:
       TF_VAR_mongodb_root_password: ${{ secrets.MONGODB_ROOT_PASSWORD }}
       TF_VAR_mongodb_password: ${{ secrets.MONGODB_PASSWORD }}
       TF_VAR_docker_username: ${{ vars.DOCKERHUB_USERNAME }}
-      TF_VAR_image_tag: ${{ github.sha }}
+      TF_VAR_image_tag: ${{ inputs.image_tag || 'latest' }}
 
     steps:
       - name: Checkout Code

@@ -48,3 +48,17 @@ jobs:
 
       - name: Shutdown
         run: docker compose down
+
+      - name: Trigger Terraform Deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'terraform-cd.yml',
+              ref: 'master',
+              inputs: {
+                image_tag: '${{ github.sha }}'
+              }
+            })

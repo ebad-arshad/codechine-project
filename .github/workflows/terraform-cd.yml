@@ -1,0 +1,75 @@
+name: "Infrastructure CD"
+
+on:
+  push:
+    branches:
+    - 'master'
+    - 'infra/**'
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-cd.yml'
+
+permissions:
+  pull-requests: write
+  contents: read
+      
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    env:
+      TF_VAR_mongodb_root_password: ${{ secrets.MONGODB_ROOT_PASSWORD }}
+      TF_VAR_mongodb_password: ${{ secrets.MONGODB_PASSWORD }}
+      TF_VAR_docker_username: ${{ vars.DOCKERHUB_USERNAME }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Terraform Init & Workspace
+        run: |
+          terraform init
+          terraform workspace select ${{ vars.TERRAFORM_WORKSPACE }} || terraform workspace new ${{ vars.TERRAFORM_WORKSPACE }}
+
+      - name: Terraform Plan
+        if: github.ref != 'refs/heads/master'
+        id: plan
+        continue-on-error: true
+        run: |
+          terraform plan -no-color -out=tfplan
+          echo "PLAN_OUTPUT<<GHA_EOF" >> $GITHUB_ENV
+          terraform show -no-color tfplan >> $GITHUB_ENV
+          echo "GHA_EOF" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        if: github.ref != 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: automated terraform plan [skip ci]"
+          title: "Infra Plan: ${{ github.ref_name }}"
+          body: |
+            ### Terraform Plan Output
+            Review the changes below. Merging this PR will trigger the Apply phase.
+            
+            ```terraform
+            ${{ env.PLAN_OUTPUT }}
+            ```
+          branch: terraform-updates-${{ github.ref_name }}
+          base: master
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/master'
+        run: terraform apply -auto-approve

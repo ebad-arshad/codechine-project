@@ -24,5 +24,3 @@ variable "mongodb_password" {
 
 variable "docker_username" {
 }
-
-variable "image_tag" {}

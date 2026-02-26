@@ -7,15 +7,8 @@ on:
         description: 'Type "destroy" to delete infrastructure'
         required: false
         default: 'apply'
-  push:
-    branches:
-    - 'master'
-    - 'infra/infrastructure_design'
-    paths:
-      - 'terraform/**'
 
 permissions:
-  pull-requests: write
   contents: read
       
 jobs:
@@ -49,31 +42,7 @@ jobs:
           terraform workspace select ${{ vars.TERRAFORM_WORKSPACE }} 2>/dev/null || terraform workspace new ${{ vars.TERRAFORM_WORKSPACE }}
 
       - name: Terraform Plan
-        if: github.ref != 'refs/heads/master'
-        id: plan
-        continue-on-error: true
-        run: |
-          terraform plan -no-color -out=tfplan
-          echo "PLAN_OUTPUT<<GHA_EOF" >> $GITHUB_ENV
-          terraform show -no-color tfplan >> $GITHUB_ENV
-          echo "GHA_EOF" >> $GITHUB_ENV
-
-      - name: Create Pull Request
-        if: github.ref != 'refs/heads/master'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: automated terraform plan [skip ci]"
-          title: "Infra Plan: ${{ github.ref_name }}"
-          body: |
-            ### Terraform Plan Output
-            Review the changes below. Merging this PR will trigger the Apply phase.
-            
-            ```terraform
-            ${{ env.PLAN_OUTPUT }}
-            ```
-          branch: infra/infrastructure_design
-          base: master
+        run: terraform plan
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/master'

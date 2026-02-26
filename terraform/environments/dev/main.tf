@@ -17,7 +17,6 @@ module "instance" {
   mongodb_root_password = var.mongodb_root_password
   mongodb_password = var.mongodb_password
   docker_username = var.docker_username
-  image_tag = var.image_tag
 }
 
 module "security" {

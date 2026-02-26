@@ -44,4 +44,4 @@ docker run -d \
   --restart always \
   -p 80:80 \
   -v /tmp/nginx.conf:/etc/nginx/conf.d/default.conf \
-  ${docker_username}/todo-frontend:${image_tag}
+  ${docker_username}/todo-frontend:latest

@@ -9,7 +9,6 @@ resource "aws_instance" "frontend_instance" {
   user_data = templatefile("${path.module}/scripts/frontend.sh", {
     backend_private_ip = aws_instance.backend_instance.private_ip
     docker_username = var.docker_username
-    image_tag = var.image_tag
   })
 
   depends_on = [ aws_instance.backend_instance ]
@@ -32,7 +31,6 @@ resource "aws_instance" "backend_instance" {
     db_private_ip = aws_instance.database_instance.private_ip
     mongodb_password      = var.mongodb_password
     docker_username = var.docker_username
-    image_tag = var.image_tag
   })
 
   depends_on = [ aws_instance.database_instance ]

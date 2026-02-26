@@ -19,4 +19,4 @@ docker run -d \
   -p 5000:5000 \
   -e MONGODB_URI="mongodb://ebad:${mongodb_password}@${db_private_ip}:27017/todo-db?authSource=todo-db" \
   -e PORT=5000 \
-  ${docker_username}/todo-backend:${image_tag}
+  ${docker_username}/todo-backend:latest

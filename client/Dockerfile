@@ -2,7 +2,7 @@
 FROM alpine:3.14 AS builder
 WORKDIR /app
 
-COPY index.html health.html db.html app.css script.js ./
+COPY index.html health.html db.html ./
 
 # -------------------------Multi-Stage-Build--------------------------------
 

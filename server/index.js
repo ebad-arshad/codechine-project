@@ -74,5 +74,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
   console.log('Created by: Muhammad Ebad Arshad')
 });
-
-console.log("this is testing")

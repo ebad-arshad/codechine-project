@@ -101,7 +101,7 @@ The stack includes custom health probes designed for DevOps monitoring tools:
 ## Infrastructure as Code (IaC)
 The project utilizes a modular, multi-environment Terraform architecture to provision a highly secure and segmented 3-tier VPC on AWS.
 
-*AWS Infrastructure Architecture Diagram*
+*AWS Infrastructure Diagram*
 ![aws-infra-architecture](architecture-pictures/aws-infra-architecture.png)
 
 ### VPC Design

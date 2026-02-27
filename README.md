@@ -4,7 +4,8 @@ This project is a production-ready To-Do application built to demonstrate shift-
 
 ---
 
-![](architecture-pictures/container-architecture.png)
+*Container Architecture Diagram*
+![container-architecture](architecture-pictures/container-architecture.png)
 
 ## Tech Stack
 
@@ -61,6 +62,9 @@ The stack includes custom health probes designed for DevOps monitoring tools:
 * `GET /api/todos`: Fetches the current list of To-Do items.
 * `POST /api/todos`: Creates a new To-Do task.
 
+*Live working website*
+![live-website](architecture-pictures/live-website.png)
+
 ---
 
 ## How to Run Locally
@@ -97,6 +101,9 @@ The stack includes custom health probes designed for DevOps monitoring tools:
 ## Infrastructure as Code (IaC)
 The project utilizes a modular, multi-environment Terraform architecture to provision a highly secure and segmented 3-tier VPC on AWS.
 
+*AWS Infrastructure Architecture Diagram*
+![aws-infra-architecture](architecture-pictures/aws-infra-architecture.png)
+
 ### VPC Design
 The infrastructure is built on a custom VPC designed for maximum isolation:
 * **Public Layer:** 2 Public Subnets housing the Application Load Balancer (ALB) and the NAT Gateway.
@@ -106,6 +113,9 @@ The infrastructure is built on a custom VPC designed for maximum isolation:
 * **NAT Gateway + EIP:** Allows Backend and Database instances in private subnets to pull images from the internet securely without being exposed to inbound threats.
 * **Route Tables:** Strictly defined public and private routing logic to maintain traffic boundaries.
 
+*VPC Resource Map*
+![vpc-resource-map](architecture-pictures/vpc-resource-map.png)
+
 ### Multi-Tier Security Groups
 Traffic is governed by the principle of Least Privilege using a chained Security Group (SG) architecture:
 * **ALB SG:** Allows inbound traffic on Port 80.
@@ -113,15 +123,33 @@ Traffic is governed by the principle of Least Privilege using a chained Security
 * **Backend SG:** Allows traffic only on Port 5000 from the Frontend SG.
 * **Database SG:** Allows traffic only on Port 27017 from the Backend SG.
 
+*Application Load Balancer Security Group*
+![alb-sg](architecture-pictures/alb-sg.png)
+*Frontend Security Group*
+![frontend-sg](architecture-pictures/frontend-sg.png)
+*Backend Security Group*
+![backend-sg](architecture-pictures/backend-sg.png)
+*Database Security Group*
+![database-sg](architecture-pictures/database-sg.png)
+
 ### Automated Provisioning & Orchestration
 * **Compute:** 3 EC2 instances (Frontend, Backend, Database) distributed across private subnets.
 * **User Data Scripts:** Terraform injects environment specific shell scripts (found in terraform/modules/instance/scripts/) into the EC2 launch configuration.
 * **Load Balancing:** The ALB acts as the single point of entry, routing traffic only to the Frontend tier.
 
+*EC2 Instances*
+![instances](architecture-pictures/instances.png)
+
+*Application Load Balancer*
+![alb](architecture-pictures/alb.png)
+
 ### State Management
 The project utilizes the latest Terraform features for enterprise-grade state reliability:
 * **S3 Remote Backend:** Centralizes the state file for team collaboration and pipeline synchronization.
 * **Native S3 Locking:** Utilizing S3's native locking capabilities instead of requiring an external DynamoDB table.
+
+*S3 Remote Backend*
+![s3-remote-backend](<architecture-pictures/s3-remote-backend.png>)
 
 ### Modular Directory Structure:
   ```bash
@@ -165,6 +193,9 @@ The project features a modular CD pipeline designed to bridge the gap between ap
 ### Deployment Control
 * **Manual Gates:** While app updates are automated, architectural changes (VPC, Security Groups) are triggered manually via Workflow Dispatch for human-in-the-loop review.
 * **Cost Management:** Includes a manual destroy action to ensure 100% cleanup of AWS resources when the environment is not in use.
+
+*Github Action Workflows*
+![pipeline](architecture-pictures/pipelines.png)
 
 ---
 

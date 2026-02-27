@@ -88,9 +88,9 @@ The stack includes custom health probes designed for DevOps monitoring tools:
     ```
 
 4. **Access Endpoints:**
-- Application: http://localhost:80
-- Health Page: http://localhost:80/status/health
-- DB Status Page: http://localhost:80/status/db
+* **Application:** http://localhost:80
+* **Health Page:** http://localhost:80/status/health
+* **DB Status Page:** http://localhost:80/status/db
 
 ---
 
@@ -99,29 +99,29 @@ The project utilizes a modular, multi-environment Terraform architecture to prov
 
 ### VPC Design
 The infrastructure is built on a custom VPC designed for maximum isolation:
-- Public Layer: 2 Public Subnets housing the Application Load Balancer (ALB) and the NAT Gateway.
-- Private Layer: 3 dedicated Private Subnets isolating the Frontend, Backend, and Database layers.
-- Connectivity: 
-- Internet Gateway (IGW): Provides entry for public traffic to the ALB.
-- NAT Gateway + EIP: Allows Backend and Database instances in private subnets to pull images from the internet securely without being exposed to inbound threats.
-- Route Tables: Strictly defined public and private routing logic to maintain traffic boundaries.
+* **Public Layer:** 2 Public Subnets housing the Application Load Balancer (ALB) and the NAT Gateway.
+* **Private Layer:** 3 dedicated Private Subnets isolating the Frontend, Backend, and Database layers.
+* **Connectivity:** 
+* **Internet Gateway (IGW):** Provides entry for public traffic to the ALB.
+* **NAT Gateway + EIP:** Allows Backend and Database instances in private subnets to pull images from the internet securely without being exposed to inbound threats.
+* **Route Tables:** Strictly defined public and private routing logic to maintain traffic boundaries.
 
 ### Multi-Tier Security Groups
 Traffic is governed by the principle of Least Privilege using a chained Security Group (SG) architecture:
-- ALB SG: Allows inbound traffic on Port 80.
-- Frontend SG: Allows traffic only on Port 80 from the ALB SG.
-- Backend SG: Allows traffic only on Port 5000 from the Frontend SG.
-- Database SG: Allows traffic only on Port 27017 from the Backend SG.
+* **ALB SG:** Allows inbound traffic on Port 80.
+* **Frontend SG:** Allows traffic only on Port 80 from the ALB SG.
+* **Backend SG:** Allows traffic only on Port 5000 from the Frontend SG.
+* **Database SG:** Allows traffic only on Port 27017 from the Backend SG.
 
 ### Automated Provisioning & Orchestration
-- Compute: 3 EC2 instances (Frontend, Backend, Database) distributed across private subnets.
-- User Data Scripts: Terraform injects environment specific shell scripts (found in terraform/modules/instance/scripts/) into the EC2 launch configuration.
-- Load Balancing: The ALB acts as the single point of entry, routing traffic only to the Frontend tier.
+* **Compute:** 3 EC2 instances (Frontend, Backend, Database) distributed across private subnets.
+* **User Data Scripts:** Terraform injects environment specific shell scripts (found in terraform/modules/instance/scripts/) into the EC2 launch configuration.
+* **Load Balancing:** The ALB acts as the single point of entry, routing traffic only to the Frontend tier.
 
 ### State Management
 The project utilizes the latest Terraform features for enterprise-grade state reliability:
-- S3 Remote Backend: Centralizes the state file for team collaboration and pipeline synchronization.
-- Native S3 Locking: Utilizing S3's native locking capabilities instead of requiring an external DynamoDB table.
+* **S3 Remote Backend:** Centralizes the state file for team collaboration and pipeline synchronization.
+* **Native S3 Locking:** Utilizing S3's native locking capabilities instead of requiring an external DynamoDB table.
 
 ### Modular Directory Structure:
   ```bash
@@ -137,21 +137,21 @@ The project utilizes the latest Terraform features for enterprise-grade state re
 The project implements a modular CI/CD strategy using GitHub Actions. By utilizing path-based triggers, the pipeline ensures that only the affected services are rebuilt and scanned, optimizing the feedback loop for development.
 
 ### Modular Workflows
-- **[`frontend-ci.yml`](.github/workflows/frontend-ci.yml)**: Triggers on frontend changes; builds Nginx image and runs security scans.
-- **[`backend-ci.yml`](.github/workflows/backend-ci.yml)**: Triggers on backend changes; performs Node.js build, including Trivy analysis and Gitleaks scanning.
-- **[`docker-compose-test.yml`](.github/workflows/docker-compose-test.yml)**: Bootstraps the stack locally via GitHub runner for integration and handshake testing.
-- **[`terraform-cd.yml`](.github/workflows/terraform-cd.yml)**: Automates AWS infrastructure provisioning and updates.
+* **[`frontend-ci.yml`](.github/workflows/frontend-ci.yml)**: Triggers on frontend changes; builds Nginx image and runs security scans.
+* **[`backend-ci.yml`](.github/workflows/backend-ci.yml)**: Triggers on backend changes; performs Node.js build, including Trivy analysis and Gitleaks scanning.
+* **[`docker-compose-test.yml`](.github/workflows/docker-compose-test.yml)**: Bootstraps the stack locally via GitHub runner for integration and handshake testing.
+* **[`terraform-cd.yml`](.github/workflows/terraform-cd.yml)**: Automates AWS infrastructure provisioning and updates.
 
 ### Security Gates and Static Analysis
-- Secret Scanning: Gitleaks is integrated into the workflow to scan the repository for accidentally committed credentials, private keys, or sensitive strings.
-- Filesystem Analysis: Trivy performs a static analysis (FS scan) on the source code prior to the build phase to identify misconfigurations in the Dockerfiles and application structure.
-- Container Hardening Verification: Post-build, the final images are subjected to a Trivy vulnerability scan. The pipeline is configured to fail if any High or Critical vulnerabilities are detected, ensuring that only hardened images reach the registry.
+* **Secret Scanning:** Gitleaks is integrated into the workflow to scan the repository for accidentally committed credentials, private keys, or sensitive strings.
+* **Filesystem Analysis:** Trivy performs a static analysis (FS scan) on the source code prior to the build phase to identify misconfigurations in the Dockerfiles and application structure.
+* **Container Hardening Verification:** Post-build, the final images are subjected to a Trivy vulnerability scan. The pipeline is configured to fail if any High or Critical vulnerabilities are detected, ensuring that only hardened images reach the registry.
 
 ### Orchestration Validation
 In parallel with the service builds, a dedicated Integration Test workflow validates the entire stack. This workflow:
-- Performs a configuration check on the docker-compose.yaml to catch syntax or logic errors.
-- Provisions the full environment (Frontend, Backend, and Database) on a clean GitHub runner.
-- Executes automated handshake tests to verify that the Backend can successfully persist data to MongoDB and that the Nginx proxy is correctly routing traffic to the internal API endpoints.
+* Performs a configuration check on the docker-compose.yaml to catch syntax or logic errors.
+* Provisions the full environment (Frontend, Backend, and Database) on a clean GitHub runner.
+* Executes automated handshake tests to verify that the Backend can successfully persist data to MongoDB and that the Nginx proxy is correctly routing traffic to the internal API endpoints.
 
 ---
 
@@ -159,12 +159,12 @@ In parallel with the service builds, a dedicated Integration Test workflow valid
 The project features a modular CD pipeline designed to bridge the gap between application artifacts and cloud infrastructure.
 
 ### The Workflow Handshake
-- Automated Trigger: On a successful master push, the Docker CI workflow builds images and triggers the Infrastructure CD via GitHub API.
-- Separation of Concerns: This handshake ensures infrastructure is only updated after application images are verified and pushed to the registry.
+* **Automated Trigger:** On a successful master push, the Docker CI workflow builds images and triggers the Infrastructure CD via GitHub API.
+* **Separation of Concerns:** This handshake ensures infrastructure is only updated after application images are verified and pushed to the registry.
 
 ### Deployment Control
-- Manual Gates: While app updates are automated, architectural changes (VPC, Security Groups) are triggered manually via Workflow Dispatch for human-in-the-loop review.
-- Cost Management: Includes a manual destroy action to ensure 100% cleanup of AWS resources when the environment is not in use.
+* **Manual Gates:** While app updates are automated, architectural changes (VPC, Security Groups) are triggered manually via Workflow Dispatch for human-in-the-loop review.
+* **Cost Management:** Includes a manual destroy action to ensure 100% cleanup of AWS resources when the environment is not in use.
 
 ---
 
@@ -224,17 +224,17 @@ Add these under the Variables tab:
 
 ### Step 3: ALB DNS Name
 Once the Infrastructure CD finishes, check the logs of the Terraform Apply step:
-- Copy the ALB DNS Name from the output at the end of the GitHub Action log.
-- Paste it into your browser. Traffic will flow:
+* Copy the ALB DNS Name from the output at the end of the GitHub Action log.
+* Paste it into your browser. Traffic will flow:
     ```bash 
     Internet -> Load Balancer -> Frontend -> Backend -> Database
     ```
 
 ### Manual Cleanup
-- Go to the Actions tab in GitHub.
-- Select the Infrastructure CD workflow.
-- Click Run workflow.
-- Type destroy in the action input.
+* Go to the Actions tab in GitHub.
+* Select the Infrastructure CD workflow.
+* Click Run workflow.
+* Type destroy in the action input.
 
 
 ---
